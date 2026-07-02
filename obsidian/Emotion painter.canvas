@@ -1,0 +1,41 @@
+{
+	"nodes":[
+		{"id":"f50cdddfbf943253","type":"group","x":-360,"y":-300,"width":790,"height":980,"label":"MVP"},
+		{"id":"56f3a0557942432a","type":"text","text":"معماری اولیه :","x":-270,"y":-280,"width":250,"height":60},
+		{"id":"411ac6ddddd1462c","type":"text","text":"# Text","x":-340,"y":-120,"width":140,"height":50,"color":"1"},
+		{"id":"4fad511ad5a531ff","type":"text","text":"# Audio","x":-102,"y":-120,"width":165,"height":50,"color":"1"},
+		{"id":"f812eef8ecb51ae0","type":"text","text":"# Voice to Text","x":-144,"y":0,"width":250,"height":60,"color":"5"},
+		{"id":"e565d9d8ea5e2838","type":"text","text":"# Emotion Detector","x":-340,"y":160,"width":446,"height":80,"color":"6"},
+		{"id":"0f78f2a89683228c","type":"text","text":"# Prompt Builder \ncan use free git hub or hugging face API's","x":-340,"y":300,"width":446,"height":80,"color":"3"},
+		{"id":"4a2abe2a607e00a2","type":"text","text":"Emotion Tags : \n```JSON\n{\n  \"joy\": 0.65,\n  \"sadness\": 0.12,\n  \"fear\": 0.05,\n  \"anger\": 0.08,\n  \"calmness\": 0.10\n}\n```","x":160,"y":70,"width":250,"height":260},
+		{"id":"bab4853dad6eed2c","type":"text","text":"# Stable Diffusion\nlocal","x":-340,"y":440,"width":446,"height":80,"color":"2"},
+		{"id":"e589d375a1b07c9b","type":"text","text":"final picture of artwork\n#✨✨✨","x":-340,"y":580,"width":446,"height":80,"color":"6"},
+		{"id":"a06733144c8bab62","x":-960,"y":600,"width":250,"height":60,"color":"3","type":"text","text":"# Stable Diffusion"},
+		{"id":"a84d0bdf9c1efaa6","x":-960,"y":380,"width":250,"height":60,"color":"3","type":"text","text":"# Python"},
+		{"id":"ae0d1cbd679bdbca","x":-960,"y":170,"width":250,"height":60,"color":"3","type":"text","text":"# HuggingFace"},
+		{"id":"fd8004e12271e366","type":"text","text":"# Wisper","x":-960,"y":-30,"width":250,"height":60,"color":"3"},
+		{"id":"8f91dc5b75e1cbc2","type":"text","text":"\n# Stramlit UI ","x":-960,"y":-280,"width":250,"height":60,"color":"3"},
+		{"id":"9428981fdc9dd331","x":640,"y":85,"width":355,"height":230,"color":"#dd9ee5","type":"text","text":"---\n\n---\n| احساس | رنگ            | سبک           |\n| ----- | -------------- | ------------- |\n| شادی  | زرد، نارنجی    | Impressionism |\n| غم    | آبی تیره       | Watercolor    |\n| خشم   | قرمز، سیاه     | Expressionism |\n| ترس   | بنفش تیره      | Surreal       |\n| آرامش | سبز، فیروزه‌ای | Minimalist    |\n"},
+		{"id":"a5061cc04fd210c7","x":640,"y":355,"width":355,"height":330,"type":"text","text":"پرامپت مثال : \n\n```Python\nemotion_prompt = \"\"\"\nsurreal artwork,\ndominant emotion fear,\npurple atmosphere,\nfog,\ndreamlike scene,\nhigh detail\n\"\"\"\n```"},
+		{"id":"d98b7318f9588e79","x":-360,"y":760,"width":790,"height":200,"color":"3","type":"text","text":"# Emotion DNA \n\nexample : \n```\nJoy      ████████ 60%\nFear     ████     25%\nCalm     ██       15%\n```"}
+	],
+	"edges":[
+		{"id":"365ffe5452f837fe","fromNode":"56f3a0557942432a","fromSide":"bottom","toNode":"411ac6ddddd1462c","toSide":"top"},
+		{"id":"5dc2dab7f06596fe","fromNode":"56f3a0557942432a","fromSide":"bottom","toNode":"4fad511ad5a531ff","toSide":"top"},
+		{"id":"afe48d17334c1121","fromNode":"4fad511ad5a531ff","fromSide":"bottom","toNode":"f812eef8ecb51ae0","toSide":"top"},
+		{"id":"ff81055e2f51448c","fromNode":"f812eef8ecb51ae0","fromSide":"bottom","toNode":"e565d9d8ea5e2838","toSide":"top"},
+		{"id":"88a3f297aeafb1b8","fromNode":"411ac6ddddd1462c","fromSide":"bottom","toNode":"e565d9d8ea5e2838","toSide":"top"},
+		{"id":"b0a0302001870089","fromNode":"e565d9d8ea5e2838","fromSide":"right","toNode":"4a2abe2a607e00a2","toSide":"left"},
+		{"id":"2c5259100e2c8173","fromNode":"e565d9d8ea5e2838","fromSide":"bottom","toNode":"0f78f2a89683228c","toSide":"top"},
+		{"id":"86007063e02f98b5","fromNode":"0f78f2a89683228c","fromSide":"bottom","toNode":"bab4853dad6eed2c","toSide":"top"},
+		{"id":"705649f3060a408e","fromNode":"bab4853dad6eed2c","fromSide":"bottom","toNode":"e589d375a1b07c9b","toSide":"top"},
+		{"id":"093240cd14f14610","fromNode":"f50cdddfbf943253","fromSide":"left","toNode":"8f91dc5b75e1cbc2","toSide":"right"},
+		{"id":"93443eee359bab51","fromNode":"f50cdddfbf943253","fromSide":"left","toNode":"ae0d1cbd679bdbca","toSide":"right"},
+		{"id":"9719d200a3285616","fromNode":"f50cdddfbf943253","fromSide":"left","toNode":"a84d0bdf9c1efaa6","toSide":"right"},
+		{"id":"edde1738675c2d77","fromNode":"f50cdddfbf943253","fromSide":"left","toNode":"a06733144c8bab62","toSide":"right"},
+		{"id":"9a16f3eb32b925b3","fromNode":"4a2abe2a607e00a2","fromSide":"right","toNode":"9428981fdc9dd331","toSide":"left"},
+		{"id":"f75f670ab92bd08b","fromNode":"f50cdddfbf943253","fromSide":"left","toNode":"fd8004e12271e366","toSide":"right"},
+		{"id":"5a570aa754a1a637","fromNode":"9428981fdc9dd331","fromSide":"bottom","toNode":"a5061cc04fd210c7","toSide":"top"},
+		{"id":"b8b76b923986e480","fromNode":"f50cdddfbf943253","fromSide":"bottom","toNode":"d98b7318f9588e79","toSide":"top"}
+	]
+}
