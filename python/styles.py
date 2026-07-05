@@ -6,7 +6,7 @@ def inject_css():
     st.markdown("""
 <style>
 
-p{font-size: 25px !important;}
+p{font-size: 15px !important;}
 
 /* ==============================
    Theme — Light (default)
