@@ -1,5 +1,9 @@
 # 🎙️ Emotion Painter
 
+#Emotion #Paint #Art #AI #Gemma3-4b #Wisper-medium-int8 #Streamlit 
+
+#Ollama #pollinations #Python
+
 Turn spoken or written words into an emotion-driven AI image prompt — record or type text, detect the emotional "DNA" of it, and get a cinematic image prompt (plus visual breakdowns) ready to feed into an image generator.
 
 ## How it works
