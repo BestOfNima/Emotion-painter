@@ -9,6 +9,7 @@ from python.app_ollama import generate_prompt
 from python.app_image import I2M
 from python.parser import parse_response
 from python.styles import inject_css
+from python.history import load_history, add_entry
 from python.ui import (
     render_prompt,
     render_summary,
@@ -47,6 +48,9 @@ if "result" not in st.session_state:
 
 if "last_generated_text" not in st.session_state:
     st.session_state.last_generated_text = None
+
+if "generated_image_path" not in st.session_state:
+    st.session_state.generated_image_path = None
 
 # ───────────────────────────────────────────────────────────────
 # Title
@@ -178,6 +182,10 @@ if generate_clicked and text.strip():
         st.session_state.result = parse_response(raw_response)
         st.session_state.last_generated_text = text
 
+    # A fresh analysis invalidates any previously generated artwork,
+    # since it belonged to the old prompt.
+    st.session_state.generated_image_path = None
+
 result = st.session_state.result
 
 if result is not None:
@@ -205,25 +213,43 @@ st.markdown("""
 <div class="section-card">
 <div class="section-title">🖼️ Final Artwork</div>
 <div class="section-subtitle">
-Run the generated prompt through Stable Diffusion (locally) and upload the
-result here
+Generate the final artwork from the prompt above using the image generator.
 </div>
 </div>
 """, unsafe_allow_html=True)
 
-uploaded_img = st.file_uploader(
-    "Upload",
-    type=["png", "jpg", "jpeg", "webp", "bmp", "gif"],
-    label_visibility="collapsed",
-)
+if result is not None and result.get("prompt"):
 
-if uploaded_img:
-
-    st.image(
-        uploaded_img,
-        caption=uploaded_img.name,
+    generate_image_clicked = st.button(
+        "🖼️ Generate Image",
         use_container_width=True,
     )
+
+    if generate_image_clicked:
+
+        with st.spinner("Generating image..."):
+            image_path = I2M(result["prompt"])
+            add_entry(result["prompt"], image_path)
+
+        st.session_state.generated_image_path = image_path
+
+    if st.session_state.generated_image_path:
+
+        st.image(
+            st.session_state.generated_image_path,
+            caption=result["prompt"],
+            use_container_width=True,
+        )
+
+    else:
+
+        st.markdown("""
+        <div class="img-placeholder">
+        🖼️
+        <br><br>
+        No image generated yet.
+        </div>
+        """, unsafe_allow_html=True)
 
 else:
 
@@ -231,6 +257,42 @@ else:
     <div class="img-placeholder">
     🖼️
     <br><br>
-    No image uploaded.
+    Generate a prompt above first.
     </div>
     """, unsafe_allow_html=True)
+
+# ==============================================================
+# HISTORY
+# ==============================================================
+
+st.markdown("""
+<div class="section-card">
+<div class="section-title">🕘 History</div>
+<div class="section-subtitle">Previously generated prompts and their artwork.</div>
+</div>
+""", unsafe_allow_html=True)
+
+history = load_history()
+
+if history:
+
+    for entry in reversed(history):
+
+        cols = st.columns([1, 2])
+
+        with cols[0]:
+            image_path = entry.get("image_path", "")
+            if image_path and os.path.exists(image_path):
+                st.image(image_path, use_container_width=True)
+            else:
+                st.caption("Image not found")
+
+        with cols[1]:
+            st.caption(entry.get("timestamp", ""))
+            st.write(entry.get("prompt", ""))
+
+        st.markdown("---")
+
+else:
+
+    st.caption("No history yet.")
