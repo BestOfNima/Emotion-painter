@@ -29,7 +29,7 @@ Turn spoken or written words into an emotion-driven AI image prompt — record o
 ### Python dependencies to install
 
 ```bash
-pip install streamlit faster-whisper ollama requests plotly
+pip install streamlit requirements.txt
 ```
 
 > Ollama itself must also be installed and running separately (see [ollama.com](https://ollama.com/)), with the desired model pulled, e.g.:
