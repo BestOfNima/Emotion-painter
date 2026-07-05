@@ -4,10 +4,15 @@ Global constants used across the Emotion Painter project.
 
 # ---------------------------------------------------------
 # Emotion Order
+#
+# NOTE: spelling of "Happyness" is intentional (not a typo) -
+# it must match the key used by app_ollama.py's SYSTEM_PROMPT /
+# emotion_dna JSON and palette.py, otherwise dna.get(emotion.lower())
+# lookups in charts.py silently return 0.
 # ---------------------------------------------------------
 
 EMOTIONS = [
-    "Happiness",
+    "Happyness",
     "Sadness",
     "Anger",
     "Fear",
@@ -19,7 +24,7 @@ EMOTIONS = [
 # ---------------------------------------------------------
 
 EMOJI = {
-    "Happiness": "😊",
+    "Happyness": "😊",
     "Sadness": "😢",
     "Anger": "😡",
     "Fear": "😨",
@@ -31,7 +36,7 @@ EMOJI = {
 # ---------------------------------------------------------
 
 EMOTION_COLORS = {
-    "Happiness": "#FACC15",
+    "Happyness": "#FACC15",
     "Sadness": "#3B82F6",
     "Anger": "#EF4444",
     "Fear": "#8B5CF6",

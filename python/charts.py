@@ -20,6 +20,15 @@ def emotion_progress(dna: dict):
 
         value = dna.get(emotion.lower(), 0)
 
+        try:
+            value = float(value)
+        except (TypeError, ValueError):
+            value = 0
+
+        # st.progress requires a value in 0.0-1.0; clamp defensively in
+        # case the model returned something outside 0-100.
+        value = max(0.0, min(100.0, value))
+
         col1, col2 = st.columns([7, 1])
 
         with col1:
@@ -29,7 +38,7 @@ def emotion_progress(dna: dict):
             st.progress(value / 100)
 
         with col2:
-            st.metric("", f"{value}%")
+            st.metric("", f"{value:.0f}%")
 
 def radar_chart(dna: dict):
 

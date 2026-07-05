@@ -21,6 +21,8 @@ COLOR_MAP = {
     "Brown": "#8B5A2B",
 }
 
+_COLOR_MAP_LOWER = {k.lower(): v for k, v in COLOR_MAP.items()}
+
 
 # ---------------------------------------------------------
 # Emotion Emoji
@@ -33,6 +35,8 @@ EMOJI = {
     "Fear": "😨",
     "Calm": "😌",
 }
+
+_EMOJI_LOWER = {k.lower(): v for k, v in EMOJI.items()}
 
 
 # ---------------------------------------------------------
@@ -47,6 +51,8 @@ EMOTION_COLOR = {
     "Calm": "#22C55E",
 }
 
+_EMOTION_COLOR_LOWER = {k.lower(): v for k, v in EMOTION_COLOR.items()}
+
 
 # ---------------------------------------------------------
 # Badge
@@ -54,8 +60,10 @@ EMOTION_COLOR = {
 
 def emotion_badge(emotion: str):
 
-    color = EMOTION_COLOR.get(emotion, "#64748B")
-    emoji = EMOJI.get(emotion, "🎭")
+    key = str(emotion).strip().lower()
+
+    color = _EMOTION_COLOR_LOWER.get(key, "#64748B")
+    emoji = _EMOJI_LOWER.get(key, "🎭")
 
     st.markdown(
         f"""
@@ -81,7 +89,15 @@ text-align:center;
 # Color Palette
 # ---------------------------------------------------------
 
-def color_palette(colors: list):
+def color_palette(colors):
+
+    if not colors:
+        return
+
+    # Defensive: handle a stray comma-separated string, even though
+    # parser.parse_response() should already have normalized this to a list.
+    if isinstance(colors, str):
+        colors = [c.strip() for c in colors.split(",") if c.strip()]
 
     if not colors:
         return
@@ -90,7 +106,7 @@ def color_palette(colors: list):
 
     for color in colors:
 
-        hex_color = COLOR_MAP.get(color, "#888888")
+        hex_color = _COLOR_MAP_LOWER.get(str(color).strip().lower(), "#888888")
 
         html += f"""
 <div style="text-align:center">

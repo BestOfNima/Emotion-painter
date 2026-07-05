@@ -6,17 +6,29 @@ import streamlit as st
 
 from python.app_STT import transcribe
 from python.app_ollama import generate_prompt
+from python.app_image import I2M
+from python.parser import parse_response
+from python.styles import inject_css
+from python.ui import (
+    render_prompt,
+    render_summary,
+    render_emotions,
+    render_debug,
+    render_download,
+)
 
 # ───────────────────────────────────────────────────────────────
 # Page config
 # ───────────────────────────────────────────────────────────────
 st.set_page_config(
-    page_title="Audio · Text · Image Studio",
+    page_title="Emotion Painter",
     page_icon="🎙️",
     layout="centered",
 )
 
 os.makedirs("audio", exist_ok=True)
+
+inject_css()
 
 # ───────────────────────────────────────────────────────────────
 # Session State
@@ -30,97 +42,18 @@ if "last_audio_id" not in st.session_state:
 if "current_audio_filename" not in st.session_state:
     st.session_state.current_audio_filename = None
 
-# ───────────────────────────────────────────────────────────────
-# CSS
-# ───────────────────────────────────────────────────────────────
-st.markdown("""
-<style>
+if "result" not in st.session_state:
+    st.session_state.result = None
 
-.stApp {
-    background-color:#0f1117;
-}
-
-.section-card{
-    background:#1a1d27;
-    border:1px solid #2d3148;
-    border-radius:16px;
-    padding:28px 32px 24px;
-    margin-bottom:24px;
-}
-
-.section-title{
-    font-size:1.15rem;
-    font-weight:700;
-    letter-spacing:.04em;
-    text-transform:uppercase;
-    margin-bottom:6px;
-}
-
-.section-title.audio{
-    color:#a78bfa;
-}
-
-.section-title.text{
-    color:#60a5fa;
-}
-
-.section-title.image{
-    color:#34d399;
-}
-
-.section-subtitle{
-    color:#6b7280;
-    font-size:.85rem;
-    margin-bottom:18px;
-}
-
-.saved-badge{
-    display:inline-flex;
-    align-items:center;
-    gap:6px;
-    background:#14532d;
-    color:#86efac;
-    border-radius:8px;
-    padding:6px 12px;
-    font-size:.82rem;
-    font-weight:600;
-    margin-top:10px;
-}
-
-.img-placeholder{
-    border:2px dashed #2d3148;
-    border-radius:12px;
-    padding:48px 24px;
-    text-align:center;
-    color:#4b5563;
-}
-
-label{
-    color:#9ca3af !important;
-}
-
-.stTextArea textarea{
-    background:#111827 !important;
-    border:1px solid #374151 !important;
-    border-radius:10px !important;
-    color:white !important;
-}
-
-.tagline{
-    color:#6b7280;
-    margin-top:-10px;
-    margin-bottom:28px;
-}
-
-</style>
-""", unsafe_allow_html=True)
+if "last_generated_text" not in st.session_state:
+    st.session_state.last_generated_text = None
 
 # ───────────────────────────────────────────────────────────────
 # Title
 # ───────────────────────────────────────────────────────────────
-st.markdown("# 🎙️ Studio")
+st.markdown("# 🎙️ Emotion Painter")
 st.markdown(
-    '<p class="tagline">Record · Write · Display</p>',
+    '<p class="section-subtitle">Record or write · detect the emotion · paint it</p>',
     unsafe_allow_html=True,
 )
 
@@ -130,10 +63,8 @@ st.markdown(
 
 st.markdown("""
 <div class="section-card">
-<div class="section-title audio">🎤 Record Audio</div>
-<div class="section-subtitle">
-Press the microphone button to record.
-</div>
+<div class="section-title">🎤 Record Audio</div>
+<div class="section-subtitle">Press the microphone button to record.</div>
 </div>
 """, unsafe_allow_html=True)
 
@@ -161,7 +92,8 @@ if audio_value is not None:
         with open(path, "wb") as f:
             f.write(audio_value.getvalue())
 
-        transcript = transcribe(filename)
+        with st.spinner("Transcribing..."):
+            transcript = transcribe(filename)
 
         st.session_state.text_content = transcript
 
@@ -190,7 +122,6 @@ files = sorted(
 if files:
 
     for file in files:
-
         st.caption(file)
         st.audio(os.path.join("audio", file))
 
@@ -204,10 +135,8 @@ else:
 
 st.markdown("""
 <div class="section-card">
-<div class="section-title text">✍️ Write Text</div>
-<div class="section-subtitle">
-Write anything or use speech-to-text.
-</div>
+<div class="section-title">✍️ Write Text</div>
+<div class="section-subtitle">Write anything or use speech-to-text.</div>
 </div>
 """, unsafe_allow_html=True)
 
@@ -218,50 +147,66 @@ text = st.text_area(
     label_visibility="collapsed",
 )
 
-# ذخیره آخرین مقدار تایپ شده
 st.session_state.text_content = text
 
 char_count = len(text)
 word_count = len(text.split()) if text.strip() else 0
 
 c1, c2 = st.columns(2)
-
 c1.metric("Characters", char_count)
 c2.metric("Words", word_count)
 
 # ==============================================================
-# Prompt Generation
+# Emotion Detection + Prompt Builder (Ollama)
 # ==============================================================
 
 st.markdown("---")
-st.subheader("🎨 Generated Image Prompt")
 
-if text.strip():
+generate_clicked = st.button(
+    "🎨 Analyze Emotion & Generate Prompt",
+    disabled=not text.strip(),
+    use_container_width=True,
+)
 
-    with st.spinner("Generating Prompt..."):
+# Only hit the model when the button is pressed, or the text has
+# changed since the last successful generation is *not* auto-triggered
+# to avoid calling Ollama on every rerun/keystroke.
+if generate_clicked and text.strip():
 
-        prompt = generate_prompt(text)
+    with st.spinner("Analyzing emotion and building prompt..."):
+        raw_response = generate_prompt(text)
+        st.session_state.result = parse_response(raw_response)
+        st.session_state.last_generated_text = text
 
-    st.text_area(
-        "Prompt",
-        value=prompt,
-        height=240,
-        disabled=True,
-    )
+result = st.session_state.result
+
+if result is not None:
+
+    render_summary(result)
+    render_emotions(result)
+    render_prompt(result["prompt"])
+    render_download(result["prompt"])
+    render_debug(result)
+
+    if st.session_state.last_generated_text != text:
+        st.caption(
+            "⚠️ Text has changed since this analysis was generated. "
+            "Click the button above to re-analyze."
+        )
 
 else:
-
-    st.info("Enter some text to generate an image prompt.")
+    st.info("Enter some text (or record audio) and click the button to generate an emotion-driven image prompt.")
 
 # ==============================================================
-# IMAGE
+# IMAGE (final artwork)
 # ==============================================================
 
 st.markdown("""
 <div class="section-card">
-<div class="section-title image">🖼️ Image Display</div>
+<div class="section-title">🖼️ Final Artwork</div>
 <div class="section-subtitle">
-Upload an image.
+Run the generated prompt through Stable Diffusion (locally) and upload the
+result here
 </div>
 </div>
 """, unsafe_allow_html=True)

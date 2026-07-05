@@ -7,7 +7,7 @@ def inject_css():
 <style>
 
 /* ==============================
-   Theme
+   Theme — Light (default)
 ============================== */
 
 :root{
@@ -20,10 +20,53 @@ def inject_css():
     --danger:#EF4444;
 
     --card:#FFFFFF;
+    --card-border:#ECECEC;
     --background:#F6F8FC;
 
     --text:#1E293B;
     --muted:#64748B;
+
+    --input-bg:#FFFFFF;
+    --input-border:#E2E8F0;
+
+    --placeholder-border:#CBD5E1;
+    --placeholder-text:#94A3B8;
+
+    --scrollbar:#CBD5E1;
+
+    --shadow: rgba(0,0,0,.05);
+    --shadow-strong: rgba(0,0,0,.10);
+
+}
+
+
+/* ==============================
+   Theme — Dark (auto, OS/browser)
+============================== */
+
+@media (prefers-color-scheme: dark){
+
+    :root{
+
+        --card:#1A1D27;
+        --card-border:#2D3148;
+        --background:#0F1117;
+
+        --text:#F1F5F9;
+        --muted:#94A3B8;
+
+        --input-bg:#111827;
+        --input-border:#374151;
+
+        --placeholder-border:#374151;
+        --placeholder-text:#6B7280;
+
+        --scrollbar:#374151;
+
+        --shadow: rgba(0,0,0,.35);
+        --shadow-strong: rgba(0,0,0,.55);
+
+    }
 
 }
 
@@ -35,6 +78,7 @@ Background
 .stApp{
 
     background:var(--background);
+    color:var(--text);
 
 }
 
@@ -51,6 +95,12 @@ h1,h2,h3{
 
 }
 
+p, span, label, .stMarkdown{
+
+    color:var(--text);
+
+}
+
 
 /* ==============================
 Section Card
@@ -58,7 +108,7 @@ Section Card
 
 .section-card{
 
-    background:white;
+    background:var(--card);
 
     border-radius:18px;
 
@@ -66,11 +116,11 @@ Section Card
 
     margin-bottom:20px;
 
-    border:1px solid #ECECEC;
+    border:1px solid var(--card-border);
 
     box-shadow:
 
-        0 8px 24px rgba(0,0,0,.05);
+        0 8px 24px var(--shadow);
 
 }
 
@@ -87,6 +137,8 @@ Section Title
 
     margin-bottom:8px;
 
+    color:var(--text);
+
 }
 
 
@@ -96,7 +148,7 @@ Subtitle
 
 .section-subtitle{
 
-    color:#64748B;
+    color:var(--muted);
 
     font-size:15px;
 
@@ -109,9 +161,13 @@ Prompt Box
 
 .stTextArea textarea{
 
+    background:var(--input-bg) !important;
+
     border-radius:16px !important;
 
-    border:1px solid #E2E8F0 !important;
+    border:1px solid var(--input-border) !important;
+
+    color:var(--text) !important;
 
     font-size:15px;
 
@@ -124,13 +180,20 @@ Metrics
 
 [data-testid="stMetric"]{
 
-    background:white;
+    background:var(--card);
 
     padding:12px;
 
     border-radius:16px;
 
-    border:1px solid #ECECEC;
+    border:1px solid var(--card-border);
+
+}
+
+[data-testid="stMetricValue"],
+[data-testid="stMetricLabel"]{
+
+    color:var(--text);
 
 }
 
@@ -145,7 +208,7 @@ Buttons
 
     border:none;
 
-    background:#6366F1;
+    background:var(--primary);
 
     color:white;
 
@@ -157,7 +220,7 @@ Buttons
 
 .stButton>button:hover{
 
-    background:#4F46E5;
+    background:var(--secondary);
 
     transform:translateY(-2px);
 
@@ -172,7 +235,7 @@ Download Button
 
     border-radius:12px;
 
-    background:#22C55E;
+    background:var(--success);
 
     color:white;
 
@@ -185,7 +248,7 @@ Progress
 
 .stProgress>div>div{
 
-    background:#6366F1;
+    background:var(--primary);
 
 }
 
@@ -197,6 +260,18 @@ Expander
 .streamlit-expanderHeader{
 
     font-weight:600;
+
+    color:var(--text);
+
+    background:var(--card);
+
+}
+
+.streamlit-expanderContent{
+
+    background:var(--card);
+
+    color:var(--text);
 
 }
 
@@ -218,9 +293,9 @@ Image Placeholder
 
 .img-placeholder{
 
-    background:white;
+    background:var(--card);
 
-    border:2px dashed #CBD5E1;
+    border:2px dashed var(--placeholder-border);
 
     border-radius:18px;
 
@@ -228,7 +303,7 @@ Image Placeholder
 
     text-align:center;
 
-    color:#94A3B8;
+    color:var(--placeholder-text);
 
     font-size:18px;
 
@@ -242,6 +317,8 @@ Cards Hover
 .section-card:hover{
 
     transform:translateY(-2px);
+
+    box-shadow:0 12px 28px var(--shadow-strong);
 
     transition:.25s;
 
@@ -260,7 +337,7 @@ Scrollbar
 
 ::-webkit-scrollbar-thumb{
 
-    background:#CBD5E1;
+    background:var(--scrollbar);
 
     border-radius:8px;
 
@@ -300,9 +377,9 @@ Color Palette
 
     border-radius:12px;
 
-    border:2px solid white;
+    border:2px solid var(--card);
 
-    box-shadow:0 3px 10px rgba(0,0,0,.15);
+    box-shadow:0 3px 10px var(--shadow-strong);
 
 }
 
@@ -314,6 +391,8 @@ JSON Viewer
 [data-testid="stJson"]{
 
     border-radius:16px;
+
+    background:var(--card);
 
 }
 
