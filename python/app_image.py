@@ -24,3 +24,4 @@ def I2M(Propmt):
         f.write(img.content)
 
     print(f"Image saved to: {filepath}")
+    return filepath
